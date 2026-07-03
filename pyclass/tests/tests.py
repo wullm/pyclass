@@ -66,7 +66,7 @@ def test_background():
         cosmo = ClassEngine(params)
         ba = Background(cosmo)
 
-        for name in ['rho_cdm', 'rho_dcdm', 'rho_ncdm_tot', 'p_ncdm_tot', 'Omega_m', 'Omega_pncdm_tot', 'time', 'conformal_time', 'hubble_function', 'comoving_radial_distance', 'comoving_angular_distance', 'growth_factor', 'growth_rate']:
+        for name in ['rho_cdm', 'rho_dcdm', 'rho_ncdm_tot', 'p_ncdm_tot', 'Omega_m', 'Omega_pncdm_tot', 'time', 'conformal_time', 'hubble_function', 'comoving_radial_distance', 'comoving_transverse_distance', 'growth_factor', 'growth_rate']:
             func = getattr(ba, name)
             assert func(0.1).shape == ()
             assert func([]).shape == (0,)
@@ -504,6 +504,23 @@ def test_decnuclass(show=False):
         plt.ylabel(r'$P(k)$ $[(\mathrm{Mpc}/h)^3]$')
         plt.show()
 
+def test_dsclass():
+    #NEW: addition for IDE (karimpsi22)
+    from pyclass.dsclass import ClassEngine, Background, Fourier
+
+    params = {'H0': 75.50415, 'omega_cdm': 0.1242302, 'omega_b': 0.02172526, 'tau_reio': 0.05206174, 'A_s': 2.051785e-09, 'n_s': 0.9548171, 'N_ncdm': 1}
+    pks = []
+    for m_ncdm in [-0.4, 0.001]:
+        params.update(m_ncdm=[m_ncdm])
+        cosmo = ClassEngine(params)
+        ba = Background(cosmo)
+        fo = Fourier(cosmo)
+        k = np.logspace(-4, np.log10(3), 1000)
+        h = ba.h
+        pk = fo.pk_kz(k * h, 0, of='theta_cb') * h**3
+        pks.append(pk)
+
+
 if __name__ == '__main__':
 
     #test_classy()
@@ -517,7 +534,8 @@ if __name__ == '__main__':
     test_harmonic()
     test_fourier()
     test_sigma8()
-    test_axiclass(show=True)
-    test_mochiclass(show=True)
-    test_negnuclass(show=True)
-    test_edeclass(show=True)
+    test_axiclass()
+    test_mochiclass()
+    test_negnuclass()
+    test_edeclass()
+    test_dsclass()
