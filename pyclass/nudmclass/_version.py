@@ -1,1 +1,1 @@
-url = 'https://github.com/wullm/class_nudmi/archive/b9838d8.tar.gz'
+url = 'https://github.com/wullm/class_nudmi/archive/9406916.tar.gz'
